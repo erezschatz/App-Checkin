@@ -23,10 +23,12 @@ __PACKAGE__->add_columns(
     },
     checkout => {
         data_type => 'datetime',
+        is_nullable => 1,
         set_on_update => 1,
     },
     total => {
         data_type => 'text',
+        is_nullable => 1,
         is_duration => 1
     },
 );
