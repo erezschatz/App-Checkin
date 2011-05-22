@@ -1,0 +1,25 @@
+#!/usr/bin/env perl
+
+use strict;
+use warnings;
+
+use App::Checkin;
+my $checkin = App::Checkin->new;
+
+sub checkin {
+    $checkin->checkin or
+        say "checkin entry exists, overwrite? [Y/n]";
+}
+
+sub get_status {
+    my $status = $checkin->get_checkin_status();
+    if (!$status) { #no checkin
+        say "no checkin data, please update";
+    } elsif ($status < 9) {
+        say "less than 9 hours since checking, checkout anyway?"
+    }
+}
+
+sub checkout {
+    say $checkin->checkout;
+}
