@@ -1,5 +1,6 @@
 use strict;
 use warnings;
+
 package App::Checkin;
 
 use App::Checkin::Schema;
@@ -29,7 +30,7 @@ sub _build_schema {
 
 sub checkin {
     my $self = shift;
-    return 0 if $self->schema->resultset('Hours')->has_entry;
+    print 'foo' if $self->schema->resultset('Hours')->has_entry;
     $self->commit_checkin;
 }
 
