@@ -5,11 +5,13 @@ use Modern::Perl;
 use App::Checkin;
 my $checkin = App::Checkin->new;
 
-$checkin->checkin;
+checkin();
 
 sub checkin {
     $checkin->checkin or
         say "checkin entry exists, overwrite? [Y/n]";
+    chomp (my $input = <STDIN>);
+    say 'FOO!' if $input =~ /^y$/i or $input eq '';
 }
 
 sub get_status {

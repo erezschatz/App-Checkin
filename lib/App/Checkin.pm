@@ -1,11 +1,12 @@
-use strict;
-use warnings;
+use Modern::Perl;
 
 package App::Checkin;
 
 use App::Checkin::Schema;
 
 use Moose;
+use DateTime;
+
 
 has schema => (
     is => 'ro',
@@ -14,23 +15,32 @@ has schema => (
     builder => '_build_schema',
 );
 
-BEGIN {
-    mkdir "$ENV{HOME}/.checkin"
-        unless opendir my $DIR, "$ENV{HOME}/.checkin";
-}
-
 sub _build_schema {
     my $self = shift;
+
+    unless (opendir my $DIR, "$ENV{HOME}/.checkin") {
+        mkdir "$ENV{HOME}/.checkin";
+    }
+
     my $schema = App::Checkin::Schema->connect(
         "dbi:SQLite:$ENV{HOME}/.checkin/hours.db"
     );
-    $schema->deploy({add_drop_table => 1 });
+
+    eval {
+        $schema->resultset('Hours')->search({})->all;
+    };
+    $schema->deploy if $@;
+
     return $schema;
 }
 
 sub checkin {
     my $self = shift;
-    print 'foo' if $self->schema->resultset('Hours')->has_entry;
+    my $duration =  DateTime->now->subtract(days => 1);
+    return if $self->schema->resultset('Hours')->search({
+        checkin => { '>', [ $duration ] }
+    });
+
     $self->commit_checkin;
 }
 
