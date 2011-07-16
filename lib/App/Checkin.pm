@@ -36,17 +36,24 @@ sub _build_schema {
 
 sub checkin {
     my $self = shift;
-    my $duration =  DateTime->now->subtract(days => 1);
-    return if $self->schema->resultset('Hours')->search({
-        checkin => { '>', [ $duration ] }
-    });
-
-    $self->commit_checkin;
+    return if $self->checkin_in_last_24_hours->all;
+    $self->schema->resultset('Hours')->create({});
 }
 
-sub commit_checkin {
+sub update_checkin {
     my $self = shift;
-    $self->schema->resultset('Hours')->create({});
+    my $to_update = $self->checkin_in_last_24_hours->update({
+        checkin => DateTime->now,
+    });
+}
+
+sub checkin_in_last_24_hours {
+    my $self = shift;
+    my $duration =  DateTime->now->subtract(days => 1);
+    return $self->schema->resultset('Hours')->search({
+        checkin => { '>', [ $duration ] },
+        checkout => undef,
+    });
 }
 
 sub checkout {
