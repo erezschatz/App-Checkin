@@ -7,12 +7,10 @@ use App::Checkin::Schema;
 use Moose;
 use DateTime;
 
-
 has schema => (
     is => 'ro',
     isa => 'DBIx::Class::Schema',
-    lazy => 1,
-    builder => '_build_schema',
+    lazy_build => 1,
 );
 
 sub _build_schema {
@@ -42,7 +40,7 @@ sub checkin {
 
 sub update_checkin {
     my $self = shift;
-    my $to_update = $self->checkin_in_last_24_hours->update({
+    $self->checkin_in_last_24_hours->update({
         checkin => DateTime->now,
     });
 }
@@ -58,8 +56,9 @@ sub checkin_in_last_24_hours {
 
 sub checkout {
     my $self = shift;
-    $self->schema->resultset('Hours')->update({}) or
-        return;
+    $self->checkin_in_last_24_hours->update({
+        checkout => DateTime->now,
+    }) or return;
     return $self->schema->resultset('Hours')->month_total;
 }
 
