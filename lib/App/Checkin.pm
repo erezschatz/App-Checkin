@@ -34,7 +34,7 @@ sub _build_schema {
 
 sub checkin {
     my $self = shift;
-    return if $self->checkin_in_last_24_hours->all;
+    return if $self->checkin_not_checkout->all;
     $self->schema->resultset('Hours')->create({});
 }
 
@@ -54,12 +54,28 @@ sub checkin_in_last_24_hours {
     });
 }
 
-sub checkout {
+sub checkin_not_checkout {
     my $self = shift;
-    $self->checkin_in_last_24_hours->update({
+    return $self->schema->resultset('Hours')->search({
+        checkout => undef,
+    });
+}
+
+sub checkout {
+    my ($self, $checkin) = @_;
+    $checkin->update({
         checkout => DateTime->now,
-    }) or return;
+    }) or die "Error in checkout\n";
+}
+
+sub month_total {
+    my $self = shift;
     return $self->schema->resultset('Hours')->month_total;
+}
+
+sub get_duration {
+    my ($self, @checkin) = @_;
+    return DateTime->now - $checkin[0]->checkin;
 }
 
 1;

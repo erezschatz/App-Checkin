@@ -6,17 +6,26 @@ use App::Checkin;
 my $checkin = App::Checkin->new;
 
 checkout();
-#get_status();
+$checkin->month_total();
 
 sub get_status {
-    my $status = $checkin->get_checkin_status();
-    if (!$status) { #no checkin
+    my $status = $checkin->checkin_not_checkout;
+    my @status = $status->all;
+    if (!@status) { #no checkin
         say "no checkin data, please update";
-    } elsif ($status < 9) {
-        say "less than 9 hours since checking, checkout anyway?"
+        exit 0;
+    } elsif (my $duration = $checkin->get_duration(@status)) {
+        if ($duration->hours < 9) {
+            say "less than 9 hours since checking,
+checkout anyway? [Y/n]";
+            chomp (my $input = <STDIN>);
+            exit 0 unless $input =~ /^y$/i or $input eq '';
+        }
     }
+    return $status;
 }
 
 sub checkout {
-    say $checkin->checkout;
+    my $checked_at = get_status();
+    say $checkin->checkout($checked_at);
 }

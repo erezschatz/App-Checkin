@@ -6,7 +6,6 @@ use App::Checkin;
 my $checkin = App::Checkin->new;
 
 checkin();
-#get_status();
 
 sub checkin {
     $checkin->checkin or do {
@@ -17,14 +16,5 @@ sub checkin {
     };
     say 'Checked in at ' . DateTime->now .
         ', Have a good day'
-}
-
-sub get_status {
-    my $status = $checkin->get_checkin_status();
-    if (!$status) { #no checkin
-        say "no checkin data, please update";
-    } elsif ($status < 9) {
-        say "less than 9 hours since checking, checkout anyway?"
-    }
 }
 
