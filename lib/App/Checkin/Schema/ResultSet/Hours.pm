@@ -19,9 +19,9 @@ sub from_last_24_hours {
 
 sub month_total {
     my $self = shift;
-    my $dt = DateTime->now->subtract(month => 1);
+    my $dt = DateTime->now->subtract(months => 1);
     my @days = $self->search({
-        checking => { '>=' => $dt }
+        checkin => { '>=' => $dt }
     })->all;
     my $total = 0;
     foreach my $day (@days) {
