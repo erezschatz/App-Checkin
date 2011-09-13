@@ -5,7 +5,7 @@ use Modern::Perl;
 use App::Checkin;
 my $checkin = App::Checkin->new;
 
-checkin();
+checkin(@ARGV);
 
 sub checkin {
     $checkin->checkin or do {
@@ -17,4 +17,3 @@ sub checkin {
     say 'Checked in at ' . DateTime->now .
         ', Have a good day'
 }
-

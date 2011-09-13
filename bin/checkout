@@ -15,7 +15,7 @@ sub get_status {
         say "no checkin data, please update";
         exit 0;
     } elsif (my $duration = $checkin->get_duration(@status)) {
-        if ($duration->hours < 9) {
+        if ($duration < 9 * 60 * 60) {
             say "less than 9 hours since checking,
 checkout anyway? [Y/n]";
             chomp (my $input = <STDIN>);

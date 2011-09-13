@@ -5,8 +5,10 @@ use warnings;
 
 use DateTime;
 
-use base qw/DBIx::Class::ResultSet
-            DBIx::Class::InflateColumn::FS::ResultSet/;
+use base qw/
+               DBIx::Class::ResultSet
+               DBIx::Class::InflateColumn::FS::ResultSet
+           /;
 
 sub from_last_24_hours {
     my $self = shift;
@@ -19,7 +21,7 @@ sub from_last_24_hours {
 
 sub month_total {
     my $self = shift;
-    my $dt = DateTime->now->subtract(months => 1);
+    my $dt = DateTime->now->subtract(months => 1)->epoch;
     my @days = $self->search({
         checkin => { '>=' => $dt }
     })->all;
