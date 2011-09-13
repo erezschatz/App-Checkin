@@ -5,11 +5,6 @@ package App::Checkin::Schema::Result::Hours;
 use base qw/DBIx::Class::Core/;
 
 __PACKAGE__->table('hours');
-__PACKAGE__->load_components(
-    qw/
-          TimeStamp
-          InflateColumn::DateTime::Duration
-      /);
 
 __PACKAGE__->add_columns(
     id  => {
@@ -19,11 +14,11 @@ __PACKAGE__->add_columns(
         default_value => '',
     },
     checkin => {
-        data_type => 'datetime',
-        set_on_create => 1,
+        data_type => 'integer',
+        is_nullable=> 0,
     },
     checkout => {
-        data_type => 'datetime',
+        data_type => 'integer',
         is_nullable => 1,
     },
     total => {
