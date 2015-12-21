@@ -9,12 +9,10 @@ checkin();
 
 sub checkin {
     $checkin->checkin or do {
-        say "checkin entry exists, overwrite? [Y/n]";
-        chomp (my $input = <STDIN>);
-        $checkin->update_checkin
-            if $input =~ /^y$/i or $input eq '';
+      say "checkin entry exists, overwrite? [Y/n]";
+      chomp (my $input = <STDIN>);
+      if ($input =~ /^y$/i or $input eq '') {
+        $checkin->update_checkin;
+      }
     };
-    say 'Checked in at ' . DateTime->now .
-        ', Have a good day'
 }
-
