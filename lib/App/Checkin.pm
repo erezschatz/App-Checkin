@@ -1,6 +1,7 @@
 # ABSTRACT: Simple, SQLite based checkin-checkout application
 
 use Modern::Perl;
+use File::HomeDir;
 
 package App::Checkin;
 
@@ -18,7 +19,7 @@ has schema => (
 sub _build_schema {
     my $self = shift;
 
-    my $home = $^O =~ m/^MSWin/ ? $ENV{'USERPROFILE'} : $ENV{HOME};
+    my $home = File::HomeDir->my_home();
 
     unless (opendir my $DIR, "$home/.checkin") {
         mkdir "$home/.checkin";
