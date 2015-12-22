@@ -1,3 +1,5 @@
+# ABSTRACT: Simple, SQLite based checkin-checkout application
+
 use Modern::Perl;
 
 package App::Checkin;
