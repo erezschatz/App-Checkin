@@ -1,6 +1,5 @@
-use strict;
-use warnings;
 package App::Checkin::Schema::Result::Hours;
+use Modern::Perl;
 
 use base qw/DBIx::Class::Core/;
 

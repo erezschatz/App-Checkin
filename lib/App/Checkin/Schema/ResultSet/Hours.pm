@@ -1,13 +1,11 @@
 package App::Checkin::Schema::ResultSet::Hours;
 
-use strict;
-use warnings;
+use Modern::Perl;
 
 use DateTime;
 
 use base qw/
                DBIx::Class::ResultSet
-               DBIx::Class::InflateColumn::FS::ResultSet
            /;
 
 sub from_last_24_hours {
@@ -19,12 +17,17 @@ sub from_last_24_hours {
     });
 }
 
-sub month_total {
+sub from_current_month {
     my $self = shift;
     my $dt = DateTime->now->subtract(months => 1)->epoch;
-    my @days = $self->search({
+    return $self->search({
         checkin => { '>=' => $dt }
     })->all;
+}
+
+sub month_total {
+    my $self = shift;
+    my @days = $self->from_current_month();
     my $total = 0;
     foreach my $day (@days) {
         $total +=  ($day->checkout - $day->checkin);

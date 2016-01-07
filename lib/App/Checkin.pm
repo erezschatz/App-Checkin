@@ -68,11 +68,17 @@ sub checkin_not_checkout {
     });
 }
 
+
 sub checkout {
     my ($self, $checkin) = @_;
     $checkin->update({
         checkout => DateTime->now->epoch,
     }) or die "Error in checkout\n";
+}
+
+sub from_current_month {
+    my $self = shift;
+    return $self->schema->resultset('Hours')->from_current_month();
 }
 
 sub month_total {
