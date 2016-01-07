@@ -1,0 +1,25 @@
+use Text::CSV_XS;
+
+use Modern::Perl;
+
+use POSIX 'strftime';
+
+use App::Checkin;
+my $checkin = App::Checkin->new;
+my $csv = Text::CSV_XS->new ({ binary => 1, auto_diag => 1 });
+
+export();
+
+sub export {
+    my @result = $checkin->from_current_month();
+    @result = map { [
+        strftime ('%Y/%m/%d %H:%M:%S', localtime $_->checkin),
+        strftime ('%Y/%m/%d %H:%M:%S', localtime $_->checkout),
+        $_->total
+    ] } @result;
+    unshift @result, [ 'check-in', 'check-out', 'hours' ];
+
+    open my $fh, ">:encoding(utf8)", "new.csv" or die "new.csv: $!";
+    $csv->say ($fh, $_) for @result;
+    close $fh or die "new.csv: $!";
+}
